@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Поздравление маме | Вся семья</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f3eaff 0%, #e9ddf5 100%);
+      font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ========= АНИМИРОВАННЫЕ ВЕТОЧКИ СИРЕНИ ========= */
+    .lilac-left, .lilac-right {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 140px;
+      pointer-events: none;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .lilac-left { left: 10px; }
+    .lilac-right { right: 10px; }
+    .branch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: swayBranch 4s ease-in-out infinite;
+      transform-origin: top center;
+    }
+    .branch-right {
+      animation: swayBranchRight 4.5s ease-in-out infinite;
+      transform-origin: top center;
+    }
+    @keyframes swayBranch {
+      0%, 100% { transform: rotate(-2deg) translateX(0); }
+      50% { transform: rotate(2deg) translateX(3px); }
+    }
+    @keyframes swayBranchRight {
+      0%, 100% { transform: rotate(2deg) translateX(0); }
+      50% { transform: rotate(-2deg) translateX(-3px); }
+    }
+    .leaf { font-size: 1.8rem; filter: drop-shadow(2px 4px 8px rgba(100, 70, 130, 0.2)); }
+    .lilac-flower {
+      font-size: 2rem;
+      filter: drop-shadow(0 2px 6px rgba(130, 80, 160, 0.3));
+      animation: softGlow 3s ease-in-out infinite;
+    }
+    @keyframes softGlow {
+      0%, 100% { text-shadow: 0 0 0 #cdb5e8; }
+      50% { text-shadow: 0 0 8px #d9c2f0, 0 0 3px #b794e0; }
+    }
+    .stem {
+      width: 2px;
+      height: 50px;
+      background: linear-gradient(to bottom, #aa8fd5, #c7acf0);
+      margin: 5px 0;
+      border-radius: 2px;
+    }
+
+    /* карточка */
+    .card {
+      max-width: 850px;
+      width: 100%;
+      background: rgba(255, 252, 255, 0.94);
+      backdrop-filter: blur(4px);
+      border-radius: 56px;
+      box-shadow: 0 25px 45px -18px rgba(110, 70, 140, 0.4);
+      overflow: hidden;
+      border: 1px solid rgba(200, 170, 230, 0.6);
+      position: relative;
+      z-index: 10;
+    }
+    .pages-container {
+      padding: 2rem 2rem 1.8rem;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+    }
+    .page {
+      display: none;
+      animation: fadeSlide 0.35s ease forwards;
+    }
+    .page.active-page { display: block; }
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #8b6bb3, #b68fd9);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 1.2rem;
+      border-left: 5px solid #cfb5ec;
+      padding-left: 1rem;
+    }
+    .greeting-text {
+      font-size: 1.08rem;
+      line-height: 1.65;
+      color: #2f2a3e;
+      background: rgba(250, 245, 255, 0.8);
+      padding: 1.3rem 1.5rem;
+      border-radius: 38px;
+      margin: 1rem 0;
+      box-shadow: inset 0 0 0 1px #ede0ff, 0 4px 12px rgba(0, 0, 0, 0.02);
+    }
+    .home-photo {
+      text-align: center;
+      margin: 1.2rem 0 0.8rem;
+    }
+    .home-photo img {
+      max-width: 100%;
+      max-height: 320px;
+      width: auto;
+      border-radius: 42px;
+      box-shadow: 0 18px 28px -12px rgba(100, 60, 130, 0.3);
+      border: 3px solid #f1e7fe;
+    }
+    .photo-caption {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: #9c7bc4;
+      font-style: italic;
+    }
+    .signature {
+      margin-top: 1.8rem;
+      text-align: right;
+      font-style: italic;
+      color: #9a7bc2;
+      border-top: 1px dashed #e2cfff;
+      padding-top: 1rem;
+      font-weight: 500;
+    }
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid #f0e4ff;
+    }
+    .nav-arrow {
+      background: #f2e8fe;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem 1.2rem;
+      border-radius: 60px;
+      transition: all 0.2s ease;
+      color: #886eb4;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      font-size: 1rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+    .nav-arrow span { font-size: 1.4rem; line-height: 1; }
+    .nav-arrow:hover:not(.disabled) {
+      background: #e8d9fd;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(110, 70, 150, 0.2);
+      color: #6d4e9b;
+    }
+    .nav-arrow.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .page-counter {
+      font-size: 0.85rem;
+      color: #b296d1;
+      background: #f5edff;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+    }
+    /* коллаж — фото любого размера */
+    .collage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 1rem;
+      margin: 1.8rem 0 1rem;
+    }
+    .collage-item {
+      background: #fefcff;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+      transition: 0.2s;
+      border: 1px solid #eddffc;
+    }
+    .collage-item:hover { transform: scale(1.02); }
+    .collage-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .collage-caption {
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      color: #9a76bd;
+      background: #fbf5ff;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      padding: 1rem;
+      background: rgba(245, 238, 255, 0.7);
+      color: #b094d0;
+      border-top: 1px solid #e9defc;
+    }
+    /* canvases для салюта и золотых искр */
+    .effect-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .effect-canvas.active { opacity: 1; }
+
+    @media (max-width: 650px) {
+      .lilac-left, .lilac-right { width: 80px; }
+      .leaf { font-size: 1.2rem; }
+      .lilac-flower { font-size: 1.4rem; }
+      .stem { height: 30px; }
+    }
+    @media (max-width: 550px) {
+      body { padding: 0.8rem; }
+      .lilac-left, .lilac-right { display: none; }
+      .pages-container { padding: 1.2rem; }
+      h2 { font-size: 1.6rem; }
+      .collage-grid { gap: 0.8rem; grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ВЕТОЧКИ СИРЕНИ -->
+<div class="lilac-left">
+  <div class="branch">
+    <div class="lilac-flower">🌸</div><div class="stem"></div><div class="leaf">🍃</div><div class="leaf">🌿</div>
+    <div class="lilac-flower">💜</div><div class="stem"></div><div class="leaf">🍃</div><div class="lilac-flower">🌸</div>
+  </div>
+  <div class="branch" style="animation-delay: 1s;">
+    <div class="leaf">🌱</div><div class="lilac-flower">💜</div><div class="stem"></div><div class="leaf">🍃</div><div class="lilac-flower">🌸</div>
+  </div>
+</div>
+<div class="lilac-right">
+  <div class="branch branch-right">
+    <div class="lilac-flower">💜</div><div class="stem"></div><div class="leaf">🌿</div><div class="leaf">🍃</div>
+    <div class="lilac-flower">🌸</div><div class="stem"></div><div class="leaf">🍃</div><div class="lilac-flower">💜</div>
+  </div>
+  <div class="branch branch-right" style="animation-delay: 1.4s;">
+    <div class="lilac-flower">🌸</div><div class="stem"></div><div class="leaf">🍃</div><div class="lilac-flower">💜</div>
+  </div>
+</div>
+
+<!-- ОСНОВНАЯ КАРТОЧКА -->
+<div class="card">
+  <div class="pages-container">
+    <!-- СТРАНИЦА 0: ГЛАВНАЯ -->
+    <div id="page0" class="page active-page">
+      <h2>🌟 Мамочка, с днём рождения!</h2>
+      <div class="home-photo">
+        <img src="картинка1.jpg" alt="Наша любимая мама">
+        <div class="photo-caption">💜 Ты — наша опора и поддержка 💜</div>
+      </div>
+      <div class="greeting-text">
+        Дорогая наша, любимая мама!<br><br>
+        Поздравляем тебя с чудесным праздником! Вся семья с любовью приготовила для тебя эту открытку.
+        Листай странички — здесь собраны самые тёплые слова от каждого из нас.
+        <br><br>
+        Ты — самая красивая, нежная, дарящая свет и вдохновение. 
+        Пусть жизнь будет полна счастливых мгновений!
+      </div>
+      <div class="signature">💕 С любовью, твоя семья</div>
+    </div>
+
+    <!-- СТРАНИЦА 1: ОТ СЫНА (ДИМА) -->
+    <div id="page1" class="page">
+      <h2>💙 Дорогая, Мама!</h2>
+      <div class="greeting-text">
+        Поздравляю тебя с днём рождения! По-моему, у тебя всё хорошо, ты успешна в своём деле, в жизни. Развиваешься в своей работе, она тебе нравится, интересна. Тебя окружают любимые близкие, которые тебя любят. Хорошо идёт. Как поезд, который взял курс, пошёл и идёт, и идёт в своём темпе. Хорошо. Пусть так и дальше будет. Главное, чтобы ты была здорова и счастлива. У тебя всё получается. Желаю тебе сил, пусть у тебя будет много сил. Желаю тебе восстанавливаться. Желаю тебе лёгкости и света. И новых открытий! И новых свершений! С днём рождения, мама!
+      </div>
+      <div class="signature">⭐ от Димы</div>
+    </div>
+
+    <!-- СТРАНИЦА 2: ОТ НЕВЕСТКИ (ДАША) -->
+    <div id="page2" class="page">
+      <h2>🌷 Дорогой второй маме</h2>
+      <div class="greeting-text">
+        Спасибо, что приняли меня как родную дочь. Ваша забота и мудрость для меня бесценны. Вы — пример доброты и душевной красоты. Желаю вам счастья, здоровья, исполнения всех мечт и желаний, покорения новых вершин! И чтобы каждый день дарил только радость и приятные воспоминания. А мы будем всегда радовать вас своей любовью и вниманием!
+      </div>
+      <div class="signature">🌺 от Даши</div>
+    </div>
+
+    <!-- СТРАНИЦА 3: ОТ МУЖА -->
+    <div id="page3" class="page">
+      <h2>💖 Любимая Жена!</h2>
+      <div class="greeting-text">
+        Дорогая моя Светулечка, поздравляю тебя с днем рождения! Желаю, чтобы у тебя было все хорошо, и ты никогда не грустила. Хорошего настроения, новых достижений и положительных результатов. Чтобы в нашем доме и дальше было мирно, тепло и уютно. Ты у нас самая лучшая! Мы тебя очень любим и желаем счастья! С днем рождения!
+      </div>
+      <div class="signature">💝 от Мужа</div>
+    </div>
+
+    <!-- СТРАНИЦА 4: ОТ МЛАДШЕГО СЫНА (АЙДАР) -->
+    <div id="page4" class="page">
+      <h2>🧸 С днём рождения!</h2>
+      <div class="greeting-text">
+        Дорогая мама, поздравляем тебя с днём рождения и желаем успехов в учебе и работе, удачной сдачи экзаменов, а самое главное здоровья и счастья!
+      </div>
+      <div class="signature">😸 от Айдара</div>
+    </div>
+
+    <!-- СТРАНИЦА 5: ОТ ДОЧЕРИ (ЭЛЬМИРА) -->
+    <div id="page5" class="page">
+      <h2>🌺 Дорогая мамочка!</h2>
+      <div class="greeting-text">
+        С днём рождения поздравляю, счастья, здоровья, успехов желаю.<br>
+        Чтоб была всегда прекрасна, смелой, духом сильной.<br>
+        И в сердце моем ты будешь всегда моей любимой мамой.
+      </div>
+      <div class="signature">💐 от Эльмиры</div>
+    </div>
+
+    <!-- СТРАНИЦА 6: КОЛЛАЖ (8 ФОТО + САЛЮТ) -->
+    <div id="page6" class="page">
+      <h2>📸 Дорогие сердцу мгновения</h2>
+      <div class="greeting-text" style="padding-bottom: 0.2rem;">
+        🥰 Мы собрали самые душевные и тёплые кадры.
+      </div>
+      <div class="collage-grid">
+        <!-- 8 фотографий (фото1..фото8) в папке images -->
+        <div class="collage-item"><img class="collage-img" src="images/фото1.jpg" alt="Фото 1"><div class="collage-caption">💜 </div></div>
+        <div class="collage-item"><img class="collage-img" src="images/фото2.jpg" alt="Фото 2"><div class="collage-caption">🌼 </div></div>
+        <div class="collage-item"><img class="collage-img" src="images/фото3.jpg" alt="Фото 3"><div class="collage-caption">🍰 </div></div>
+        <div class="collage-item"><img class="collage-img" src="images/фото4.jpg" alt="Фото 4"><div class="collage-caption">💐 </div></div>
+        <div class="collage-item"><img class="collage-img" src="images/фото5.jpg" alt="Фото 5"><div class="collage-caption">✨ </div></div>
+        <div class="collage-item"><img class="collage-img" src="images/фото6.jpg" alt="Фото 6"><div class="collage-caption">🤗 </div></div>
+        <div class="collage-item"><img class="collage-img" src="images/фото7.jpg" alt="Фото 7"><div class="collage-caption">🌟 </div></div>
+        <div class="collage-item"><img class="collage-img" src="images/фото8.jpg" alt="Фото 8"><div class="collage-caption">🌺 </div></div>
+      </div>
+      <div class="signature">📷 На память с любовью</div>
+    </div>
+
+    <!-- НАВИГАЦИЯ -->
+    <div class="navigation">
+      <button class="nav-arrow" id="prevBtn"><span>◀</span> Назад</button>
+      <div class="page-counter" id="pageCounter">Страница 1 из 7</div>
+      <button class="nav-arrow" id="nextBtn">Вперёд <span>▶</span></button>
+    </div>
+  </div>
+  <footer>💜 Обнимаем крепко-крепко, мамочка! Ты — наша опора и гордость 💜</footer>
+</div>
+
+<!-- Холст для салюта (коллаж) -->
+<canvas id="fireworksCanvas" class="effect-canvas"></canvas>
+<!-- Холст для золотых искр (главная страница) -->
+<canvas id="goldenCanvas" class="effect-canvas"></canvas>
+
+<script>
+  // ---------- УПРАВЛЕНИЕ СТРАНИЦАМИ ----------
+  const pages = [
+    document.getElementById('page0'),
+    document.getElementById('page1'),
+    document.getElementById('page2'),
+    document.getElementById('page3'),
+    document.getElementById('page4'),
+    document.getElementById('page5'),
+    document.getElementById('page6')
+  ];
+  let currentIndex = 0;
+  const totalPages = pages.length;
+  const pageCounterSpan = document.getElementById('pageCounter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function updateNavButtons() {
+    if (currentIndex === 0) {
+      prevBtn.classList.add('disabled');
+    } else {
+      prevBtn.classList.remove('disabled');
+    }
+  }
+
+  function showPage(index) {
+    pages.forEach(p => p.classList.remove('active-page'));
+    pages[index].classList.add('active-page');
+    pageCounterSpan.innerText = `Страница ${index+1} из ${totalPages}`;
+    currentIndex = index;
+    updateNavButtons();
+    
+    // Если открыта страница коллажа (индекс 6) — запускаем салют
+    if (index === 6) {
+      startFireworks();
+    }
+    // Если открыта главная страница (индекс 0) — запускаем золотые искорки
+    if (index === 0) {
+      startGoldenSparkles();
+    }
+  }
+
+  function nextPage() {
+    let newIndex = currentIndex + 1;
+    if (newIndex >= totalPages) newIndex = 0;
+    showPage(newIndex);
+  }
+
+  function prevPage() {
+    if (currentIndex === 0) return;
+    let newIndex = currentIndex - 1;
+    if (newIndex < 0) newIndex = totalPages - 1;
+    showPage(newIndex);
+  }
+
+  prevBtn.addEventListener('click', prevPage);
+  nextBtn.addEventListener('click', nextPage);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') { prevPage(); e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { nextPage(); e.preventDefault(); }
+  });
+
+  // ---------- САЛЮТ (для коллажа) ----------
+  let fireworksActive = false;
+  let animationFireworks = null;
+  const canvasFire = document.getElementById('fireworksCanvas');
+  const ctxFire = canvasFire.getContext('2d');
+
+  function resizeFireCanvas() {
+    canvasFire.width = window.innerWidth;
+    canvasFire.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeFireCanvas);
+  resizeFireCanvas();
+
+  let particlesFire = [];
+
+  function createFirework(x, y) {
+    const count = 70 + Math.floor(Math.random() * 40);
+    const colors = ['#FFD700', '#FF69B4', '#DA70D6', '#BA55D3', '#E0B0FF', '#FFB6C1', '#DDA0DD', '#C77DFF', '#FFA07A'];
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2 + Math.random() * 6;
+      const vx = Math.cos(angle) * speed;
+      const vy = Math.sin(angle) * speed;
+      particlesFire.push({
+        x: x, y: y, vx: vx, vy: vy,
+        size: 4 + Math.random() * 7,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: 1,
+        gravity: 0.1,
+        life: 1
+      });
+    }
+    for (let i = 0; i < 5; i++) {
+      particlesFire.push({
+        x: x, y: y, vx: (Math.random() - 0.5) * 3, vy: (Math.random() - 0.5) * 3,
+        size: 10 + Math.random() * 8,
+        color: '#FFFFFF',
+        alpha: 0.8,
+        gravity: 0.05,
+        life: 0.5
+      });
+    }
+  }
+
+  function updateFire() {
+    for (let i = 0; i < particlesFire.length; i++) {
+      const p = particlesFire[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      p.life -= 0.02;
+      p.alpha = p.life;
+      if (p.life <= 0 || p.y > canvasFire.height + 150 || p.x < -150 || p.x > canvasFire.width + 150) {
+        particlesFire.splice(i, 1);
+        i--;
+      }
+    }
+  }
+
+  function drawFire() {
+    ctxFire.clearRect(0, 0, canvasFire.width, canvasFire.height);
+    for (const p of particlesFire) {
+      ctxFire.globalAlpha = p.alpha;
+      ctxFire.fillStyle = p.color;
+      ctxFire.beginPath();
+      ctxFire.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctxFire.fill();
+    }
+    ctxFire.globalAlpha = 1;
+  }
+
+  function animateFireworks() {
+    if (!fireworksActive) return;
+    updateFire();
+    drawFire();
+    if (particlesFire.length === 0) {
+      cancelAnimationFrame(animationFireworks);
+      animationFireworks = null;
+      fireworksActive = false;
+      canvasFire.classList.remove('active');
+    } else {
+      animationFireworks = requestAnimationFrame(animateFireworks);
+    }
+  }
+
+  function startFireworks() {
+    if (animationFireworks) {
+      cancelAnimationFrame(animationFireworks);
+      animationFireworks = null;
+    }
+    particlesFire = [];
+    fireworksActive = true;
+    resizeFireCanvas();
+    canvasFire.classList.add('active');
+
+    createFirework(canvasFire.width / 2, canvasFire.height * 0.3);
+    createFirework(canvasFire.width * 0.2, canvasFire.height * 0.4);
+    createFirework(canvasFire.width * 0.8, canvasFire.height * 0.4);
+    createFirework(canvasFire.width * 0.5, canvasFire.height * 0.5);
+    createFirework(canvasFire.width * 0.7, canvasFire.height * 0.25);
+    
+    setTimeout(() => {
+      if (fireworksActive) {
+        createFirework(canvasFire.width * 0.3, canvasFire.height * 0.2);
+        createFirework(canvasFire.width * 0.6, canvasFire.height * 0.35);
+      }
+    }, 300);
+    setTimeout(() => {
+      if (fireworksActive) {
+        createFirework(canvasFire.width * 0.9, canvasFire.height * 0.5);
+        createFirework(canvasFire.width * 0.1, canvasFire.height * 0.6);
+      }
+    }, 600);
+
+    animateFireworks();
+    setTimeout(() => {
+      if (fireworksActive) {
+        cancelAnimationFrame(animationFireworks);
+        animationFireworks = null;
+        fireworksActive = false;
+        canvasFire.classList.remove('active');
+        particlesFire = [];
+        ctxFire.clearRect(0, 0, canvasFire.width, canvasFire.height);
+      }
+    }, 3000);
+  }
+
+  // ---------- ЗОЛОТЫЕ ИСКОРКИ (для главной страницы) ----------
+  let goldenActive = false;
+  let animationGolden = null;
+  const canvasGold = document.getElementById('goldenCanvas');
+  const ctxGold = canvasGold.getContext('2d');
+
+  function resizeGoldCanvas() {
+    canvasGold.width = window.innerWidth;
+    canvasGold.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeGoldCanvas);
+  resizeGoldCanvas();
+
+  let goldParticles = [];
+
+  function createGoldenSparkle(x, y) {
+    const count = 35 + Math.floor(Math.random() * 25);
+    const goldColors = ['#FFD700', '#FFC125', '#FFDF00', '#F0E68C', '#FFB347', '#FFAA33'];
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 1 + Math.random() * 4;
+      const vx = Math.cos(angle) * speed;
+      const vy = Math.sin(angle) * speed;
+      goldParticles.push({
+        x: x, y: y, vx: vx, vy: vy,
+        size: 2 + Math.random() * 5,
+        color: goldColors[Math.floor(Math.random() * goldColors.length)],
+        alpha: 0.9,
+        gravity: 0.03,
+        life: 1
+      });
+    }
+  }
+
+  function updateGold() {
+    for (let i = 0; i < goldParticles.length; i++) {
+      const p = goldParticles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      p.life -= 0.02;
+      p.alpha = p.life * 0.9;
+      if (p.life <= 0 || p.y > canvasGold.height + 100 || p.x < -100 || p.x > canvasGold.width + 100) {
+        goldParticles.splice(i, 1);
+        i--;
+      }
+    }
+  }
+
+  function drawGold() {
+    ctxGold.clearRect(0, 0, canvasGold.width, canvasGold.height);
+    for (const p of goldParticles) {
+      ctxGold.globalAlpha = p.alpha;
+      ctxGold.fillStyle = p.color;
+      ctxGold.beginPath();
+      ctxGold.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctxGold.fill();
+      // добавим мерцание — маленькие звёздочки
+      ctxGold.shadowBlur = 6;
+      ctxGold.shadowColor = '#FFD700';
+      ctxGold.fill();
+      ctxGold.shadowBlur = 0;
+    }
+    ctxGold.globalAlpha = 1;
+  }
+
+  function animateGold() {
+    if (!goldenActive) return;
+    updateGold();
+    drawGold();
+    if (goldParticles.length === 0) {
+      cancelAnimationFrame(animationGolden);
+      animationGolden = null;
+      goldenActive = false;
+      canvasGold.classList.remove('active');
+    } else {
+      animationGolden = requestAnimationFrame(animateGold);
+    }
+  }
+
+  function startGoldenSparkles() {
+    if (animationGolden) {
+      cancelAnimationFrame(animationGolden);
+      animationGolden = null;
+    }
+    goldParticles = [];
+    goldenActive = true;
+    resizeGoldCanvas();
+    canvasGold.classList.add('active');
+
+    // множество золотых искр по всей видимой области
+    const sparkCount = 120;
+    for (let i = 0; i < sparkCount; i++) {
+      const x = Math.random() * canvasGold.width;
+      const y = Math.random() * canvasGold.height * 0.8;
+      setTimeout(() => {
+        if (goldenActive) createGoldenSparkle(x, y);
+      }, i * 15);
+    }
+    // центральный пучок
+    setTimeout(() => {
+      if (goldenActive) {
+        for (let i = 0; i < 40; i++) {
+          createGoldenSparkle(canvasGold.width / 2, canvasGold.height / 2);
+        }
+      }
+    }, 200);
+
+    animateGold();
+    // через 2.8 секунды убираем искры
+    setTimeout(() => {
+      if (goldenActive) {
+        cancelAnimationFrame(animationGolden);
+        animationGolden = null;
+        goldenActive = false;
+        canvasGold.classList.remove('active');
+        goldParticles = [];
+        ctxGold.clearRect(0, 0, canvasGold.width, canvasGold.height);
+      }
+    }, 2800);
+  }
+
+  // Инициализация: показываем первую страницу и запускаем золотые искры
+  showPage(0);
+</script>
+</body>
+</html>
